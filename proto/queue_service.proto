@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package queue_v1;
+
+option go_package = "github.com/ruslan-onishchenko/go-test-task/pkg/servelayer/queue/v1";
+
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
+
+message PushRequest {
+  string queue = 1 [(buf.validate.field).string = {min_len: 1}];
+  string message = 2 [(buf.validate.field).string = {min_len: 1}];
+}
+
+message PushResponse {}
+
+message GetRequest {
+  string queue = 1 [(buf.validate.field).string = {min_len: 1}];
+  int64 timeout = 2;
+}
+
+message GetResponse {
+  string message = 1 [(buf.validate.field).string = {min_len: 1}];
+}
+
+service QueueService {
+  rpc Push(PushRequest) returns (PushResponse) {
+    option (google.api.http) = {
+      put: "/v1/queue/{queue}"
+      body: "*"
+    };
+  }
+
+  rpc Get(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/v1/queue/{queue}"
+    };
+  }
+}

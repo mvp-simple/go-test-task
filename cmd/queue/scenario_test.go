@@ -31,7 +31,9 @@ func prepareURI(t *testing.T, queueName string, timeout ...int) (put string, get
 	return put, get
 }
 
-func reverseStringSlice(s []string) []string {
+func reverseStringSlice(t *testing.T, s []string) []string {
+	t.Helper()
+
 	result := make([]string, len(s))
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		result[i], result[j] = s[j], s[i]
@@ -46,11 +48,11 @@ func reverseStringSlice(s []string) []string {
 
 func TestScenarioSimple(t *testing.T) {
 	firstQueueSend := []string{"one", "two", "three"}
-	firstQueueAnswer := reverseStringSlice(firstQueueSend)
+	firstQueueAnswer := reverseStringSlice(t, firstQueueSend)
 	firstQueueEqual := []bool{true, true, true}
 
 	secondQueueSend := []string{"one", "two", "three"}
-	secondQueueAnswer := reverseStringSlice(firstQueueSend)
+	secondQueueAnswer := reverseStringSlice(t, firstQueueSend)
 	secondQueueAnswer[0] = "aa"
 	secondQueueAnswer[1] = "bb"
 	secondQueueEqual := []bool{false, false, true}
